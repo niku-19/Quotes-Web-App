@@ -1,29 +1,39 @@
-import React,{ useEffect } from 'react'
-import QuoteList from '../components/quotes/QuoteList'
+import React, { useEffect, useState } from "react";
+import LoadingSpinner from "../components/UI/LoadingSpinner";
+import QuoteList from "../components/quotes/QuoteList";
+import style from "../components/quotes/QuoteList.module.css";
 const AllQuotes = () => {
-  const quotesDataFetched = [];
-  const fetchData = () => {
-    fetch("https://quoteshandler-default-rtdb.firebaseio.com/quotes.json")
-    .then((resp) => {
-      return resp.json()
-    }).then((data) => {
-      for(const key in data){
-        quotesDataFetched.push({
-          id: key,
-          author: data[key].author,
-          quote: data[key].text
-        })
-      }
-    })
-  }
+  const [quotesDataFetched, setQuotesDataFetched] = useState([]);
+  const [isLoading,setIsLoading] = useState(false);
   useEffect(() => {
-    fetchData()
-  })
+    const fetchDataFunction = () => {
+      setIsLoading(true);
+      fetch("https://quoteshandler-default-rtdb.firebaseio.com/quotes.json")
+      .then((response) => response.json())
+      .then((data) => {
+        for (const key in data) {
+          const quote = {
+            id: key,
+            author : data[key].author,
+            quotes : data[key].text
+          };
+          setQuotesDataFetched(prev => {
+            return [...prev, quote];
+          });
+        }
+        setIsLoading(false);
+      });
+    }
+    fetchDataFunction();
+  }, []);
   return (
-    <div>
-      <QuoteList quotesData={quotesDataFetched}/>
-    </div>
-  )
-}
+    <>
+      <div className={style.sorting}>
+        <button>Sort by Author</button>
+      </div>
+      {isLoading ? <LoadingSpinner /> : <QuoteList quotesData={quotesDataFetched}/>}
+    </>
+  );
+};
 
-export default AllQuotes
+export default AllQuotes;

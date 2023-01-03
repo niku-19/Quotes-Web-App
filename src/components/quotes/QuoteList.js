@@ -4,21 +4,21 @@ import QuoteItem from "./QuoteItem";
 import classes from "./QuoteList.module.css";
 
 const QuoteList = (props) => {
-
   return (
     <>
       <ul className={classes.list}>
-        {props.quotesData.map((quote) => (
-          <>
-          {console.log("🚀 ~ file: QuoteList.js:15 ~ QuoteList ~ quote", quote)}
-            <QuoteItem
-              key={quote.id}
-              id={quote.id}
-              author={quote.author}
-              text={quote.quote}
-            />
-          </>
-        ))}
+        {
+          props.quotesData.map((quote) => {
+            return (
+              <QuoteItem
+                key={quote.id}
+                id={quote.id}
+                text={quote.quotes}
+                author={quote.author}
+              />
+            );
+          })
+        }
       </ul>
     </>
   );
